@@ -1,23 +1,36 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+
 /**
  * Created by Aaron on 26/10/2015.
  */
 public abstract class Creature {
+
     protected int age;
-    protected int lifespan;
+    protected static ArrayList<String> CREATURES = new ArrayList<String>();
 
-    public Creature(){
-        String className = this.getClass().getName();
-        Constants.CREATION_PROBABILITIES.put(className, generateProbability());
+
+
+
+
+    public static void init() {
+        for(HashMap<String, Double> map : Constants.CREATURE_CONSTANTS.values()){
+            for(String name : CREATURES) {
+                map.put(name, 0.0);
+            }
+        }
 
     }
 
-    public abstract void step();
-
-    protected abstract Double generateProbability();
-
-    public abstract Creature birth();
-
-    private void name(){
-        this.getClass().getName();
+    public static double getValue(String name, String className){
+        return Constants.CREATURE_CONSTANTS.get(name).get(className);
     }
+
+    public class SubFinder{
+        public SubFinder(){
+            System.out.println(this.getClass().getDeclaringClass());
+        }
+    }
+
 }
