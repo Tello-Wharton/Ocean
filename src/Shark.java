@@ -3,7 +3,6 @@
  */
 public class Shark extends Fish {
 
-    public static String NAME;
     public static Creature ALPHA;
 
     public Shark(int age, Location location) {
@@ -12,7 +11,7 @@ public class Shark extends Fish {
 
     public Shark(String name){
         super();
-        NAME = name;
+        this.name = name;
         ALPHA = this;
     }
 

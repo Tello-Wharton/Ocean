@@ -3,7 +3,6 @@
  */
 public class Plankton extends Creature {
 
-    public static String NAME;
     public static Creature ALPHA;
 
     public Plankton(int age, Location location){
@@ -12,7 +11,7 @@ public class Plankton extends Creature {
 
     public Plankton(String name){
         super();
-        NAME = name;
+        this.name = name;
         ALPHA = this;
     }
 

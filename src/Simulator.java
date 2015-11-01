@@ -24,7 +24,8 @@ public class Simulator {
         view.setColor(Sardine.class, Color.blue);
         view.setColor(Shark.class, Color.black);
         cf = new CreatureFactory();
-        populateField();
+        //populateField();
+        new OptionsBoard();
     }
 
     public void populateField(){

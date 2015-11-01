@@ -7,6 +7,8 @@ import java.util.Objects;
  */
 public abstract class Creature {
 
+    protected String name;
+
     protected int age;
     protected Location location;
 
@@ -20,6 +22,14 @@ public abstract class Creature {
     public abstract Creature getNewInstance(int age,Location location);
 
     public abstract Creature getAlpha();
+
+    public String getName(){
+        if(name.isEmpty()){
+            return getAlpha().getName();
+        }else {
+            return name;
+        }
+    }
 
     protected void step(){
         age += 1;
@@ -46,7 +56,7 @@ public abstract class Creature {
     }
 
     protected static Number getValue(String name, Creature creature){
-        return Constants.CREATURE_CONSTANTS.get(name).get(creature);
+        return Constants.CREATURE_DATA[Constants.CF_KEY.indexOf(name)][Constants.CF_KEY.indexOf(creature)];
     }
 
 }
