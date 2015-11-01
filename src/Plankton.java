@@ -3,12 +3,26 @@
  */
 public class Plankton extends Creature {
 
-    static {
-        Creature.CREATURES.add(Plankton.class.getSimpleName());
+    public static String NAME;
+    public static Creature ALPHA;
+
+    public Plankton(int age, Location location){
+        super(age, location);
     }
 
-    public Plankton(){
+    public Plankton(String name){
+        super();
+        NAME = name;
+        ALPHA = this;
+    }
 
+    public Creature getNewInstance(int age, Location location){
+        return new Plankton(age,location);
+    }
+
+    @Override
+    public Creature getAlpha() {
+        return ALPHA;
     }
 
 }

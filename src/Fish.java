@@ -3,4 +3,11 @@
  */
 public abstract class Fish extends Creature {
 
+    protected Fish(int age, Location location) {
+        super(age, location);
+    }
+
+    protected Fish(){
+        super();
+    }
 }

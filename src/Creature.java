@@ -8,29 +8,45 @@ import java.util.Objects;
 public abstract class Creature {
 
     protected int age;
-    protected static ArrayList<String> CREATURES = new ArrayList<String>();
+    protected Location location;
 
-
-
-
-
-    public static void init() {
-        for(HashMap<String, Double> map : Constants.CREATURE_CONSTANTS.values()){
-            for(String name : CREATURES) {
-                map.put(name, 0.0);
-            }
-        }
-
+    protected Creature(int age, Location location){
+        this.age = age;
+        this.location = location;
     }
 
-    public static double getValue(String name, String className){
-        return Constants.CREATURE_CONSTANTS.get(name).get(className);
+    protected Creature(){}
+
+    public abstract Creature getNewInstance(int age,Location location);
+
+    public abstract Creature getAlpha();
+
+    protected void step(){
+        age += 1;
     }
 
-    public class SubFinder{
-        public SubFinder(){
-            System.out.println(this.getClass().getDeclaringClass());
-        }
+    protected double creationProbability(){
+        return getValue(Constants.CREATION_PROBABILITY, getAlpha()).doubleValue();
+    }
+
+    protected double breedingProbability(){
+        return getValue(Constants.BREEDING_PROBABILITY, getAlpha()).doubleValue();
+    }
+
+    protected int maxAge(){
+        return (int) getValue(Constants.MAXIMUM_AGE, getAlpha()).intValue();
+    }
+
+    protected int breedingAge(){
+        return getValue(Constants.BREEDING_AGE, getAlpha()).intValue();
+    }
+
+    protected double nutritionalValue(){
+        return getValue(Constants.NUTRITIONAL_VALUE, getAlpha()).doubleValue();
+    }
+
+    protected static Number getValue(String name, Creature creature){
+        return Constants.CREATURE_CONSTANTS.get(name).get(creature);
     }
 
 }
