@@ -36,27 +36,27 @@ public abstract class Creature {
     }
 
     protected double creationProbability(){
-        return getValue(Constants.CREATION_PROBABILITY, getAlpha()).doubleValue();
+        return getValue(Constants.CREATION_PROBABILITY, getAlpha()).getValue().doubleValue();
     }
 
     protected double breedingProbability(){
-        return getValue(Constants.BREEDING_PROBABILITY, getAlpha()).doubleValue();
+        return getValue(Constants.BREEDING_PROBABILITY, getAlpha()).getValue().doubleValue();
     }
 
     protected int maxAge(){
-        return (int) getValue(Constants.MAXIMUM_AGE, getAlpha()).intValue();
+        return getValue(Constants.MAXIMUM_AGE, getAlpha()).getValue().intValue();
     }
 
     protected int breedingAge(){
-        return getValue(Constants.BREEDING_AGE, getAlpha()).intValue();
+        return getValue(Constants.BREEDING_AGE, getAlpha()).getValue().intValue();
     }
 
     protected double nutritionalValue(){
-        return getValue(Constants.NUTRITIONAL_VALUE, getAlpha()).doubleValue();
+        return getValue(Constants.NUTRITIONAL_VALUE, getAlpha()).getValue().doubleValue();
     }
 
-    protected static Number getValue(String name, Creature creature){
-        return Constants.CREATURE_DATA[Constants.CF_KEY.indexOf(name)][Constants.CF_KEY.indexOf(creature)];
+    protected static Cell getValue(NumericalDataType field, Creature creature){
+        return Constants.CREATURE_DATA[Constants.CF_KEY.indexOf(field)][Constants.CREATURE_KEY.indexOf(creature)];
     }
 
 }

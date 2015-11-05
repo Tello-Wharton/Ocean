@@ -14,6 +14,7 @@ public class Simulator {
 
 
     public static void main(String[] args){
+        Constants.init();
         new Simulator();
     }
 
@@ -24,15 +25,13 @@ public class Simulator {
         view.setColor(Sardine.class, Color.blue);
         view.setColor(Shark.class, Color.black);
         cf = new CreatureFactory();
-        //populateField();
-        new OptionsBoard();
+        populateField();
+        new OptionsBoard(this);
     }
 
     public void populateField(){
         int x = 100;
         int y = 100;
-
-
         field = new Field(x,y);
         for(int a = 0; a < field.getWidth(); a++){
             for(int b = 0; b < field.getDepth(); b++){
@@ -40,7 +39,6 @@ public class Simulator {
                 field.place(cf.getRandom(location),location);
             }
         }
-
         view.showStatus(1, field);
 
 
