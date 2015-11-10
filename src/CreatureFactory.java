@@ -1,6 +1,3 @@
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -8,7 +5,14 @@ import java.util.Random;
  */
 public class CreatureFactory {
 
-    public static Creature[] CREATURES = {new Shark("Shark"), new Sardine("Sardine"), new Plankton("Plankton")};
+    public static Creature SHARK = new Shark("Shark");
+    public static Creature SARDINE = new Sardine("Sardine");
+    public static Creature PLANKTON = new Plankton("Plankton");
+
+    public static Creature[] CREATURES = {SHARK, SARDINE, PLANKTON};
+    public static void init(){
+
+    }
 
     public CreatureFactory(){
 
@@ -21,7 +25,7 @@ public class CreatureFactory {
         for (Creature creature : CREATURES) {
             probability += creature.creationProbability();
             if (random - probability < 0) {
-                return creature.getNewInstance(0,location);
+                return creature.getRandomInstance(location);
             }
         }
         return null;

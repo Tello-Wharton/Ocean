@@ -3,24 +3,39 @@
  */
 public class Sardine extends Fish {
 
-    public static Creature ALPHA;
+    private static Creature ALPHA;
 
-    public Sardine(int age, Location location){
-        super(age, location);
+    public Sardine(Location location){
+        super(location);
     }
 
     public Sardine(String name){
-        super();
-        this.name = name;
+        super(name);
         ALPHA = this;
     }
 
-    public Creature getNewInstance(int age, Location location){
-        return new Sardine(age,location);
+    public Sardine() {
+
+    }
+
+    public Creature getRandomInstance(Location location){
+        Creature c = new Sardine(location);
+        c.setRandomAge();
+        return c;
     }
 
     @Override
-    public Creature getAlpha() {
+    protected Creature getAlpha() {
         return ALPHA;
+    }
+
+    @Override
+    public Creature getNewborn() {
+        return new Sardine();
+    }
+
+    @Override
+    public void step() {
+
     }
 }

@@ -145,7 +145,6 @@ public class OptionsBoard extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            RandomGenerator.initialiseWithSeed(100);
             simulator.populateField();
         }
     }

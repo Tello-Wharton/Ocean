@@ -3,25 +3,40 @@
  */
 public class Shark extends Fish {
 
-    public static Creature ALPHA;
+    private static Creature ALPHA;
 
-    public Shark(int age, Location location) {
-        super(age, location);
+    public Shark(Location location) {
+        super(location);
     }
 
     public Shark(String name){
-        super();
-        this.name = name;
+        super(name);
         ALPHA = this;
     }
 
-    public Creature getNewInstance(int age, Location location){
-        return new Shark(age,location);
+    public Shark() {
+        super();
+    }
+
+    public Creature getRandomInstance(Location location){
+        Creature c = new Shark(location);
+        c.setRandomAge();
+        return c;
     }
 
     @Override
-    public Creature getAlpha() {
+    protected Creature getAlpha() {
         return ALPHA;
+    }
+
+    @Override
+    public Creature getNewborn() {
+        return new Shark();
+    }
+
+    @Override
+    public void step() {
+
     }
 
 }

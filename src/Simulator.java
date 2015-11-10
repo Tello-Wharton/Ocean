@@ -14,6 +14,7 @@ public class Simulator {
 
 
     public static void main(String[] args){
+        RandomGenerator.initialiseWithSeed(100);
         Constants.init();
         new Simulator();
     }
@@ -40,7 +41,5 @@ public class Simulator {
             }
         }
         view.showStatus(1, field);
-
-
     }
 }
