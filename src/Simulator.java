@@ -31,15 +31,9 @@ public class Simulator {
     }
 
     public void populateField(){
-        int x = 100;
-        int y = 100;
-        field = new Field(x,y);
-        for(int a = 0; a < field.getWidth(); a++){
-            for(int b = 0; b < field.getDepth(); b++){
-                Location location = new Location(a,b);
-                field.place(cf.getRandom(location),location);
-            }
-        }
+        field = cf.populateField();
         view.showStatus(1, field);
     }
+
+
 }
