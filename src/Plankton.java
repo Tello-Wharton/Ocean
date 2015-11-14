@@ -7,12 +7,10 @@ public class Plankton extends Creature {
 
     private static Creature ALPHA;
 
-    public Plankton(){
 
-    }
 
-    public Plankton(Location location){
-        super(location);
+    private Plankton(Location location, Field field){
+        super(location, field);
     }
 
     public Plankton(String name){
@@ -20,8 +18,8 @@ public class Plankton extends Creature {
         ALPHA = this;
     }
 
-    public Creature getRandomInstance(Location location){
-        Creature c = new Plankton(location);
+    public Creature getRandomInstance(Location location, Field field){
+        Creature c = new Plankton(location, field);
         c.setRandomAge();
         return c;
     }
@@ -32,13 +30,9 @@ public class Plankton extends Creature {
     }
 
     @Override
-    public Creature getNewborn() {
-        return new Plankton();
+    public Creature getNewborn(Location location) {
+        return new Plankton(location, field);
     }
 
-    @Override
-    public void step() {
-
-    }
 
 }

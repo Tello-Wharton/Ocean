@@ -5,8 +5,8 @@ public class Shark extends Fish {
 
     private static Creature ALPHA;
 
-    public Shark(Location location) {
-        super(location);
+    private Shark(Location location, Field field) {
+        super(location, field);
     }
 
     public Shark(String name){
@@ -14,12 +14,8 @@ public class Shark extends Fish {
         ALPHA = this;
     }
 
-    public Shark() {
-        super();
-    }
-
-    public Creature getRandomInstance(Location location){
-        Creature c = new Shark(location);
+    public Creature getRandomInstance(Location location, Field field){
+        Creature c = new Shark(location, field);
         c.setRandomAge();
         return c;
     }
@@ -30,13 +26,10 @@ public class Shark extends Fish {
     }
 
     @Override
-    public Creature getNewborn() {
-        return new Shark();
+    public Creature getNewborn(Location location) {
+        return new Shark(location, field);
     }
 
-    @Override
-    public void step() {
 
-    }
 
 }

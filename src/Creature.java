@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by Aaron on 26/10/2015.
@@ -14,17 +11,28 @@ public abstract class Creature {
     protected HashSet<Creature> food;
     //The name of this Creature
     protected String name;
-    //The location this Creature is situated in
+    //The Location this Creature is situated in
     protected Location location;
+    //The Field this Creature belongs to
+    protected Field field;
     //The age of this creature
     protected int age;
     //When the Creature's age is no longer less than this, it dies
     protected int maximumAge;
 
-    //Main constructor for creating a creature
-    protected Creature(Location location){
-        this.location = location;
+    protected double breedingProbability;
 
+    protected int breedingAge;
+
+    private boolean hasProcessed;
+
+    private Random random;
+
+    //Main constructor for creating a creature
+    protected Creature(Location location, Field field){
+        this.location = location;
+        this.field = field;
+        field.place(this,location);
         init();
     }
 
@@ -44,14 +52,18 @@ public abstract class Creature {
         name = getName();
         age = 0;
         maximumAge = maxAge();
+        hasProcessed = false;
+        random = RandomGenerator.getRandom();
+        breedingProbability = breedingProbability();
+        breedingAge = breedingAge();
     }
 
     //Returns the original Creature of this type created
     protected abstract Creature getAlpha();
     //Returns Creature at the desired location,
-    public abstract Creature getRandomInstance(Location location);
+    public abstract Creature getRandomInstance(Location location, Field field);
     //Returns a newly born Creature
-    public abstract Creature getNewborn();
+    public abstract Creature getNewborn(Location location);
 
     //Returns the name of this Creature
     public String getName(){
@@ -65,39 +77,44 @@ public abstract class Creature {
     }
 
     //Increments a step of 1 year
-    public abstract void step();
+    public void step(){
+        age();
+
+        birth();
+
+    }
 
     //Calculates age and kills the creature if necessary
     protected void age(){
         age+= 1;
         if(age >= maxAge()){
-            //die
+            die();
         }
     }
 
     //Gets the creation probability of this Creature
     protected double creationProbability(){
-        return getValue(Constants.CREATION_PROBABILITY, getSafeAlpha()).getValue().doubleValue();
+        return getValue(Constants.CREATION_PROBABILITY).getValue().doubleValue();
     }
     //Gets the breeding probability of this Creature
     protected double breedingProbability(){
-        return getValue(Constants.BREEDING_PROBABILITY, getSafeAlpha()).getValue().doubleValue();
+        return getValue(Constants.BREEDING_PROBABILITY).getValue().doubleValue();
     }
     //Gets the maximum age of this Creature
     protected int maxAge(){
-        return getValue(Constants.MAXIMUM_AGE, getSafeAlpha()).getValue().intValue();
+        return getValue(Constants.MAXIMUM_AGE).getValue().intValue();
     }
     //Gets the breeding age of this Creature
     protected int breedingAge(){
-        return getValue(Constants.BREEDING_AGE, getSafeAlpha()).getValue().intValue();
+        return getValue(Constants.BREEDING_AGE).getValue().intValue();
     }
     //Gets the nutritional value of this Creature
     protected double nutritionalValue(){
-        return getValue(Constants.NUTRITIONAL_VALUE, getSafeAlpha()).getValue().doubleValue();
+        return getValue(Constants.NUTRITIONAL_VALUE).getValue().doubleValue();
     }
     //Gets the value of a Cell for this Creature
-    protected static Cell getValue(NumericalDataType field, Creature creature){
-        return Constants.CREATURE_DATA[Constants.CF_KEY.indexOf(field)][Constants.CREATURE_KEY.indexOf(creature)];
+    protected Cell getValue(NumericalDataType field){
+        return Constants.CREATURE_DATA[Constants.CF_KEY.indexOf(field)][Constants.CREATURE_KEY.indexOf(getSafeAlpha())];
     }
     //Sets a random age for this Creature
     protected void setRandomAge(){
@@ -112,10 +129,37 @@ public abstract class Creature {
         }
     }
 
-
+    protected void die()throws DeadCreatureException{
+        field.place(null,location);
+        throw new DeadCreatureException();
+    }
 
     public HashSet<Creature> getFood(){
         return food;
     }
 
+    public void setFood(Creature... creatures){
+        for(Creature creature : creatures){
+            food.add(creature);
+        }
+    }
+
+    public void setHasProcessed(boolean hasProcessed){
+        this.hasProcessed = hasProcessed;
+    }
+
+    public boolean hasProcessed(){
+        return hasProcessed;
+    }
+
+    private void birth(){
+        if (age >= breedingAge) {
+            if (breedingProbability > random.nextDouble()) {
+                Location birthLocation = field.freeAdjacentLocation(location);
+                if (birthLocation != null) {
+                    getNewborn(birthLocation);
+                }
+            }
+        }
+    }
 }

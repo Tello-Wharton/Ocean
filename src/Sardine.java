@@ -5,8 +5,8 @@ public class Sardine extends Fish {
 
     private static Creature ALPHA;
 
-    public Sardine(Location location){
-        super(location);
+    private Sardine(Location location, Field field){
+        super(location, field);
     }
 
     public Sardine(String name){
@@ -14,12 +14,9 @@ public class Sardine extends Fish {
         ALPHA = this;
     }
 
-    public Sardine() {
 
-    }
-
-    public Creature getRandomInstance(Location location){
-        Creature c = new Sardine(location);
+    public Creature getRandomInstance(Location location, Field field){
+        Creature c = new Sardine(location, field);
         c.setRandomAge();
         return c;
     }
@@ -30,12 +27,9 @@ public class Sardine extends Fish {
     }
 
     @Override
-    public Creature getNewborn() {
-        return new Sardine();
+    public Creature getNewborn(Location location) {
+        return new Sardine(location, field);
     }
 
-    @Override
-    public void step() {
 
-    }
 }

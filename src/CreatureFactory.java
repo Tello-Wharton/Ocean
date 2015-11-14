@@ -12,7 +12,8 @@ public class CreatureFactory {
     public static Creature[] CREATURES = {SHARK, SARDINE, PLANKTON};
 
     public static void init(){
-
+        SHARK.setFood(SARDINE);
+        SARDINE.setFood(PLANKTON);
     }
 
     public CreatureFactory(){
@@ -26,20 +27,20 @@ public class CreatureFactory {
         for(int a = 0; a < field.getWidth(); a++){
             for(int b = 0; b < field.getDepth(); b++){
                 Location location = new Location(a,b);
-                field.place(getRandom(location),location);
+                getRandom(location,field);
             }
         }
         return field;
     }
 
-    public Creature getRandom(Location location) {
+    public Creature getRandom(Location location, Field field) {
         Random generatedRandom = RandomGenerator.getRandom();
         double random = generatedRandom.nextDouble();
         double probability = 0;
         for (Creature creature : CREATURES) {
             probability += creature.creationProbability();
             if (random - probability < 0) {
-                return creature.getRandomInstance(location);
+                return creature.getRandomInstance(location, field);
             }
         }
         return null;
