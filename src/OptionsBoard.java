@@ -19,9 +19,18 @@ public class OptionsBoard extends JFrame {
     JPanel board;
     JPanel buttons;
 
+    JButton setSeed;
+    JTextField seed;
     JButton run;
     JButton apply;
+    JButton pause;
     JButton step;
+    JButton slowSteps;
+    JButton jumpTo;
+    JTextField jump;
+
+
+    boolean paused;
 
     public OptionsBoard(){
 
@@ -34,7 +43,7 @@ public class OptionsBoard extends JFrame {
         creatureDataBoard = new CreatureDataBoard();
         board = new JPanel();
         buttons = new JPanel();
-        board.setLayout(new GridBagLayout());
+        board.setLayout(new BorderLayout());
 
         init();
         pack();
@@ -45,20 +54,19 @@ public class OptionsBoard extends JFrame {
     }
 
     private void init() {
-        GridBagConstraints c;
-        c = new GridBagConstraints();
-        c.gridy = 0;
 
-        board.add(creatureDataBoard, c);
+
+        board.add(creatureDataBoard, BorderLayout.CENTER);
         creatureDataBoard.setVisible(true);
 
-        c = new GridBagConstraints();
-        c.gridy = 1;
+
         addButtons();
-        board.add(buttons, c);
+        board.add(buttons, BorderLayout.SOUTH);
 
         board.setBackground(Color.WHITE);
         add(board);
+
+        paused = true;
 
     }
 
@@ -66,20 +74,33 @@ public class OptionsBoard extends JFrame {
         JPanel panel = new JPanel();
         panel.setOpaque(false);
 
+        setSeed = new JButton("Set Seed:");
+        seed = new JTextField(10);
+        setSeed.addActionListener(new setSeedListener());
         run = new JButton("Run");
         run.addActionListener(new RunListener());
         run.setEnabled(false);
         apply = new JButton("Apply");
         apply.addActionListener(new ApplyListener());
+        pause = new JButton("Pause");
+        pause.addActionListener(new PauseListener());
         step = new JButton("Step");
         step.addActionListener(new StepListener());
-        JButton slowSteps = new JButton("Step >");
+        slowSteps = new JButton("Step >");
         slowSteps.addActionListener(new slowStepsListener());
+        jumpTo = new JButton("Step By:");
+        jump = new JTextField(5);
+        jumpTo.addActionListener(new jumpToListener(jump));
 
+        panel.add(setSeed);
+        panel.add(seed);
         panel.add(run);
         panel.add(apply);
+        panel.add(pause);
         panel.add(step);
         panel.add(slowSteps);
+        panel.add(jumpTo);
+        panel.add(jump);
         panel.setVisible(true);
 
         buttons = panel;
@@ -88,12 +109,14 @@ public class OptionsBoard extends JFrame {
 
     public void canRun(boolean canRun){
         apply.setEnabled(!canRun);
+        setSeed.setEnabled(!canRun);
         run.setEnabled(canRun);
     }
 
     private class ApplyListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            updateSeed();
 
             creatureDataBoard.parseData();
             if(!errorMessage.show("Creature Data Error")){
@@ -108,7 +131,9 @@ public class OptionsBoard extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            updateSeed();
             run.setEnabled(false);
+            setSeed.setEnabled(false);
             Simulator.getCurrentSimulator().populateField();
 
         }
@@ -118,7 +143,11 @@ public class OptionsBoard extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Simulator.getCurrentSimulator().step();
+            try {
+                Simulator.getCurrentSimulator().step(1);
+            }catch (FieldEmptyException exception){
+
+            }
         }
     }
 
@@ -129,22 +158,29 @@ public class OptionsBoard extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             simulator = Simulator.getCurrentSimulator();
+            paused = false;
 
             Thread thread = new Thread() {
                 @Override
                 public void run() {
                     while (true) {
-                        simulator.step();
+                        try {
+                            simulator.step(1);
+                        }catch (FieldEmptyException exception){
+                            paused = true;
+                        }
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException ex) {
                             Thread.currentThread().interrupt();
                         }
+                        if(paused)break;
                     }
                 }
             };
 
             thread.start();
+
 
         }
     }
@@ -152,4 +188,53 @@ public class OptionsBoard extends JFrame {
     public static OptionsBoard getCurrentOptionsBoard(){
         return currentOptionsBoard;
     }
+
+    private class PauseListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            paused = true;
+        }
+    }
+
+    private class jumpToListener implements ActionListener {
+
+        Simulator simulator;
+        JTextField jump;
+
+        public jumpToListener(JTextField jump) {
+            this.jump = jump;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            simulator = Simulator.getCurrentSimulator();
+
+            try {
+                simulator.step(Integer.parseInt(jump.getText()));
+            }catch (NumberFormatException exception){
+                ErrorMessage.getDataErrorMessage().addMessage("Steps must be an integer");
+            }catch (FieldEmptyException exception){
+
+            }
+        }
+    }
+
+    private class setSeedListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            updateSeed();
+        }
+    }
+
+    public void updateSeed(){
+        try {
+            RandomGenerator.initialiseWithSeed(Integer.parseInt(seed.getText()));
+        }catch (NumberFormatException exception) {
+            ErrorMessage.getDataErrorMessage().addMessage("Seed must be an integer");
+        }
+    }
+
+
 }
