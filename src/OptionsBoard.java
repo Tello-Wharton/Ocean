@@ -73,10 +73,13 @@ public class OptionsBoard extends JFrame {
         apply.addActionListener(new ApplyListener());
         step = new JButton("Step");
         step.addActionListener(new StepListener());
+        JButton slowSteps = new JButton("Step >");
+        slowSteps.addActionListener(new slowStepsListener());
 
         panel.add(run);
         panel.add(apply);
         panel.add(step);
+        panel.add(slowSteps);
         panel.setVisible(true);
 
         buttons = panel;
@@ -116,6 +119,33 @@ public class OptionsBoard extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             Simulator.getCurrentSimulator().step();
+        }
+    }
+
+    private class slowStepsListener implements ActionListener{
+
+        Simulator simulator;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            simulator = Simulator.getCurrentSimulator();
+
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    while (true) {
+                        simulator.step();
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                }
+            };
+
+            thread.start();
+
         }
     }
 
